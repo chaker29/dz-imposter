@@ -50,12 +50,12 @@ export default function GamePlay({ roles, onEliminate, onQuickReset, onFullReset
 
         {/* ─── TITLE ─── */}
         <Box sx={{ textAlign: 'center', mb: '8px' }}>
-          <h1 className="font-black text-lg gradient-text" style={{ margin: 0 }}>Chkoune l'Imposter?</h1>
+          <h1 className="font-black text-lg gradient-text" style={{ margin: 0 }}>? Chkoune l'Imposter</h1>
           <p style={{ color: '#64748b', fontSize: 14, marginTop: 6 }}>مرحلة النقاش والتصويت</p>
         </Box>
 
         {/* ─── STATS ─── */}
-        <Box sx={{ display: 'flex', gap: '10px', mb: '12px' }}>
+        <Box sx={{ display: 'flex', gap: '10px', mb: '12px', mt: "25px" }}>
           <Box sx={{ flex: 1, background: 'rgba(20,184,166,0.08)', border: '1px solid rgba(20,184,166,0.15)', borderRadius: '16px', px: '12px', py: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Box sx={{ width: 32, height: 32, borderRadius: '12px', background: 'rgba(20,184,166,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Shield size={14} className="text-teal-400" strokeWidth={1.8} />
@@ -87,14 +87,6 @@ export default function GamePlay({ roles, onEliminate, onQuickReset, onFullReset
 
         {/* ─── ADMIN CONTROLS ─── */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button
-            onClick={() => setShowImposters(v => !v)}
-            className="bg-slate-800/60 border border-slate-700/50 hover:border-slate-600"
-            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 16, color: '#94a3b8', fontSize: 15, cursor: 'pointer' }}
-          >
-            {showImposters ? <EyeOff size={14} /> : <Eye size={14} />}
-            <span>{showImposters ? 'إخفاء الإمبوسترز' : 'كشف الإمبوسترز (أدمن)'}</span>
-          </button>
           <AnimatePresence>
             {showImposters && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ overflow: 'hidden' }}>
@@ -108,7 +100,7 @@ export default function GamePlay({ roles, onEliminate, onQuickReset, onFullReset
               </motion.div>
             )}
           </AnimatePresence>
-          <Box sx={{ display: 'flex', gap: '8px' }}>
+          <Box sx={{ display: 'flex', gap: '8px', mt: "12px" }}>
             <button onClick={onQuickReset}
               className="bg-teal-500/10 border border-teal-500/25 hover:bg-teal-500/15"
               style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 12px', borderRadius: 16, color: '#2dd4bf', fontSize: 14, cursor: 'pointer' }}>

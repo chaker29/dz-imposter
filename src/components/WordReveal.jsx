@@ -188,7 +188,7 @@ export default function WordReveal({ roles, revealIndex, setRevealIndex, onDone 
                 >
                   <div className="bg-teal-500/15 border border-teal-500/25" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 999, padding: '8px 16px', color: '#2dd4bf', fontSize: 16, fontWeight: 700, marginBottom: 20 }}>
                     <Unlock size={14} strokeWidth={2.5} />
-                    أنت مواطن 🏙️
+                    أنت مواطن
                   </div>
                   <p style={{ color: '#94a3b8', fontSize: 14, margin: '0 0 12px' }}>كلمتك السرية</p>
                   <div dir="rtl" style={{ fontSize: '2.25rem', fontWeight: 900, color: '#fff', marginBottom: 20 }}>
