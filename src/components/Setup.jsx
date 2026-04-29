@@ -5,20 +5,21 @@ import {
   Trophy, Pizza, PawPrint, Car, Building2, Laptop, Smile,
   Clapperboard, Music, GraduationCap, MapPin, Shirt,
   Plus, X, Users, Lightbulb, UserCheck, Rocket, ChevronUp, ChevronDown,
+  Settings, Shapes
 } from 'lucide-react'
 
 const CAT_ICONS = {
-  sports:  <Trophy size={26} strokeWidth={1.8} />,
-  food:    <Pizza size={26} strokeWidth={1.8} />,
+  sports: <Trophy size={26} strokeWidth={1.8} />,
+  food: <Pizza size={26} strokeWidth={1.8} />,
   animals: <PawPrint size={26} strokeWidth={1.8} />,
-  cars:    <Car size={26} strokeWidth={1.8} />,
-  cities:  <Building2 size={26} strokeWidth={1.8} />,
-  tech:    <Laptop size={26} strokeWidth={1.8} />,
-  status:  <Smile size={26} strokeWidth={1.8} />,
-  movies:  <Clapperboard size={26} strokeWidth={1.8} />,
-  music:   <Music size={26} strokeWidth={1.8} />,
-  school:  <GraduationCap size={26} strokeWidth={1.8} />,
-  places:  <MapPin size={26} strokeWidth={1.8} />,
+  cars: <Car size={26} strokeWidth={1.8} />,
+  cities: <Building2 size={26} strokeWidth={1.8} />,
+  tech: <Laptop size={26} strokeWidth={1.8} />,
+  status: <Smile size={26} strokeWidth={1.8} />,
+  movies: <Clapperboard size={26} strokeWidth={1.8} />,
+  music: <Music size={26} strokeWidth={1.8} />,
+  school: <GraduationCap size={26} strokeWidth={1.8} />,
+  places: <MapPin size={26} strokeWidth={1.8} />,
   clothes: <Shirt size={26} strokeWidth={1.8} />,
 }
 
@@ -185,7 +186,10 @@ export default function Setup({ onStart, categories }) {
 
         {/* ─── SETTINGS ─── */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <SectionLabel>الإعدادات</SectionLabel>
+          <SectionLabel>
+            <Settings size={13} className="text-teal-400" />
+            الإعدادات
+          </SectionLabel>
 
           <Box sx={{ background: 'rgba(30,41,59,0.6)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '24px', overflow: 'hidden' }}>
             {/* Hints toggle */}
@@ -247,7 +251,8 @@ export default function Setup({ onStart, categories }) {
 
         {/* ─── CATEGORIES ─── */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <SectionLabel right={`${selectedCats.length} مختارة`}>الفئات</SectionLabel>
+          <SectionLabel right={`${selectedCats.length} مختارة`}>
+            <Shapes size={13} className="text-teal-400" />  الفئات</SectionLabel>
 
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
             {categories.map((cat, i) => {

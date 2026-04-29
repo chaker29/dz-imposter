@@ -16,17 +16,9 @@ function shuffle(arr) {
   return a
 }
 
-function buildRoles(players, imposterCount, selectedCategories, hintsMode) {
-  // Pick a random category from selected ones
-  const pool = gameData.categories.filter(c => selectedCategories.includes(c.id))
-  const category = pool[Math.floor(Math.random() * pool.length)]
-  const pair = category.pairs[Math.floor(Math.random() * category.pairs.length)]
-
-  // Randomly decide which word is citizen word
-  const flip = Math.random() < 0.5
-  const citizenWord = flip ? pair.wordA : pair.wordB
-  const imposterWord = flip ? pair.wordB : pair.wordA
-  const hint = pair.hint
+function buildRoles(players, imposterCount, pair, hintsMode) {
+  const citizenWord = pair.word || pair.wordA;
+  const hint = pair.hint;
 
   // Assign imposter indices
   const indices = shuffle([...Array(players.length).keys()])
@@ -35,7 +27,7 @@ function buildRoles(players, imposterCount, selectedCategories, hintsMode) {
   return players.map((name, i) => ({
     name,
     isImposter: imposterIndices.has(i),
-    word: imposterIndices.has(i) ? null : citizenWord,   // imposters see NO word
+    word: imposterIndices.has(i) ? null : citizenWord,
     hint: hintsMode ? hint : null,
     eliminated: false,
     id: i,
@@ -57,17 +49,35 @@ export default function App() {
   const [roles, setRoles] = useState([])
   const [revealIndex, setRevealIndex] = useState(0)
   const [winner, setWinner] = useState(null) // 'citizens' | 'imposters'
+  const [lastCategory, setLastCategory] = useState(null)
 
-  const startGame = useCallback((setupConfig) => {
+  const getWordPair = (selectedCategories) => {
+    const pool = gameData.categories.filter(c => selectedCategories.includes(c.id))
+
+    // Logic to pick a different category if possible
+    let availablePool = pool.filter(c => c.id !== lastCategory)
+    if (availablePool.length === 0) availablePool = pool // Reset if all used or only one
+
+    const category = availablePool[Math.floor(Math.random() * availablePool.length)]
+    setLastCategory(category.id)
+
+    const localPair = category.pairs[Math.floor(Math.random() * category.pairs.length)]
+    return { word: localPair.wordA, hint: localPair.hint };
+  }
+
+  const startGame = (setupConfig) => {
     const { playerNames, selectedCategories, hintsMode, imposterCount } = setupConfig
     setConfig(setupConfig)
     setPlayers(playerNames)
-    const assigned = buildRoles(playerNames, imposterCount, selectedCategories, hintsMode)
+
+    const pair = getWordPair(selectedCategories)
+    const assigned = buildRoles(playerNames, imposterCount, pair, hintsMode)
+
     setRoles(assigned)
     setRevealIndex(0)
     setWinner(null)
     setScreen(SCREENS.REVEAL)
-  }, [])
+  }
 
   const onRevealDone = useCallback(() => {
     setScreen(SCREENS.GAME)
@@ -94,7 +104,8 @@ export default function App() {
 
   const quickReset = useCallback(() => {
     if (!config) return
-    const assigned = buildRoles(config.playerNames, config.imposterCount, config.selectedCategories, config.hintsMode)
+    const pair = getWordPair(config.selectedCategories)
+    const assigned = buildRoles(config.playerNames, config.imposterCount, pair, config.hintsMode)
     setRoles(assigned)
     setRevealIndex(0)
     setWinner(null)
@@ -159,7 +170,6 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-
       {/* ─── FOOTER ─── */}
       <footer style={{
         position: 'relative', zIndex: 20,
