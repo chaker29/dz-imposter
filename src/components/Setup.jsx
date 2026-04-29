@@ -5,7 +5,7 @@ import {
   Trophy, Pizza, PawPrint, Car, Building2, Laptop, Smile,
   Clapperboard, Music, GraduationCap, MapPin, Shirt,
   Plus, X, Users, Lightbulb, UserCheck, Rocket, ChevronUp, ChevronDown,
-  Settings, Shapes, Compass, Tag, Landmark
+  Settings, Shapes
 } from 'lucide-react'
 
 const CAT_ICONS = {
