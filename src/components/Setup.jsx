@@ -112,7 +112,7 @@ export default function Setup({ onStart, categories }) {
             </div>
             <Typography variant="h3" sx={{ fontWeight: 900, fontSize: '2.25rem', letterSpacing: '-0.02em', mb: '8px' }}>
               <span className="gradient-text">Chkoune</span>{' '}
-              <span style={{ color: '#fff' }}>l'Imposter?</span>
+              <span style={{ color: '#fff' }}>l'Imposter</span>
             </Typography>
 
           </Box>

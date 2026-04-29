@@ -159,6 +159,43 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── FOOTER ─── */}
+      <footer style={{
+        position: 'relative', zIndex: 20,
+        padding: '24px 16px 32px',
+        textAlign: 'center',
+      }}>
+        <div style={{
+          maxWidth: 400, margin: '0 auto',
+          padding: '20px 24px',
+          background: 'rgba(15,23,42,0.8)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(51,65,85,0.4)',
+          borderRadius: 20,
+        }}>
+          <div style={{
+            height: 1, marginBottom: 16,
+            background: 'linear-gradient(to right, transparent, #2dd4bf, #818cf8, transparent)',
+            opacity: 0.4,
+          }} />
+          <p style={{ color: '#64748b', fontSize: 13, margin: 0, lineHeight: 1.8 }}>
+            Made with <span style={{ color: '#f43f5e' }}>❤️</span> by
+          </p>
+          <p style={{
+            color: '#e2e8f0', fontSize: 18, fontWeight: 800, margin: '4px 0 0',
+            background: 'linear-gradient(135deg, #2dd4bf, #818cf8)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '0.02em',
+          }}>
+            Chaker Lousra
+          </p>
+          <p style={{ color: '#475569', fontSize: 11, margin: '8px 0 0', letterSpacing: '0.05em' }}>
+            © {new Date().getFullYear()} — ? Chkoune l'Imposter
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
