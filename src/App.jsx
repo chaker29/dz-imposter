@@ -17,7 +17,9 @@ function shuffle(arr) {
 }
 
 function buildRoles(players, imposterCount, pair, hintsMode) {
-  const citizenWord = pair.word || pair.wordA;
+  // Randomly pick one word from the words array
+  const words = pair.words || [pair.word || pair.wordA];
+  const secretWord = words[Math.floor(Math.random() * words.length)];
   const hint = pair.hint;
 
   // Assign imposter indices
@@ -27,7 +29,7 @@ function buildRoles(players, imposterCount, pair, hintsMode) {
   return players.map((name, i) => ({
     name,
     isImposter: imposterIndices.has(i),
-    word: imposterIndices.has(i) ? null : citizenWord,
+    word: imposterIndices.has(i) ? null : secretWord,
     hint: hintsMode ? hint : null,
     eliminated: false,
     id: i,
@@ -62,7 +64,7 @@ export default function App() {
     setLastCategory(category.id)
 
     const localPair = category.pairs[Math.floor(Math.random() * category.pairs.length)]
-    return { word: localPair.wordA, hint: localPair.hint };
+    return localPair;
   }
 
   const startGame = (setupConfig) => {
