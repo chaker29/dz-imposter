@@ -193,12 +193,6 @@ export default function WordReveal({ roles, revealIndex, setRevealIndex, onDone 
                   <div dir="rtl" style={{ fontSize: '2.25rem', fontWeight: 900, color: '#fff', marginBottom: 20 }}>
                     {current?.word}
                   </div>
-                  {current?.hint && (
-                    <div className="bg-slate-800/60 border border-slate-700/50" style={{ borderRadius: 16, padding: '12px 16px', display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                      <span style={{ color: '#fbbf24', fontSize: 14 }}>💡 تلميح:</span>
-                      <span style={{ color: '#cbd5e1', fontSize: 16 }}>{current.hint}</span>
-                    </div>
-                  )}
                   <p style={{ color: '#475569', fontSize: 14, margin: '16px 0 0' }}>اكشف الإمبوستر دون أن تقول كلمتك مباشرة 🕵️</p>
                 </motion.div>
               )}
@@ -221,7 +215,12 @@ export default function WordReveal({ roles, revealIndex, setRevealIndex, onDone 
                   </div>
                   <p style={{ color: '#cbd5e1', fontWeight: 600, fontSize: 16, margin: '0 0 8px' }}>لا تعرف الكلمة الصحيحة</p>
                   <p style={{ color: '#64748b', fontSize: 16, margin: '0 0 16px' }}>حاول تندمج مع المواطنين دون أن تنكشف 🤫</p>
-                  
+                  {current?.hint && (
+                    <div className="bg-slate-800/60 border border-slate-700/50" style={{ borderRadius: 16, padding: '12px 16px', display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                      <span style={{ color: '#fbbf24', fontSize: 12 }}>💡 تلميح:</span>
+                      <span style={{ color: '#cbd5e1', fontSize: 14 }}>{current.hint}</span>
+                    </div>
+                  )}
                   <div className="bg-rose-500/8 border border-rose-500/15" style={{ borderRadius: 16, padding: '12px 16px' }}>
                     <p style={{ color: 'rgba(251,113,133,0.7)', fontSize: 14, margin: 0 }}>نصيحة: استمع للآخرين واستنتج الكلمة 🧠</p>
                   </div>
