@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Box, Stack, Container, Typography } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import {
   Trophy, Pizza, PawPrint, Car, Building2, Laptop, Smile,
   Clapperboard, Music, GraduationCap, MapPin, Shirt,
   Plus, X, Users, Lightbulb, UserCheck, Rocket, ChevronUp, ChevronDown,
-  Settings, Shapes
+  Settings, Shapes , Landmark, Tag
 } from 'lucide-react'
 
 const CAT_ICONS = {
