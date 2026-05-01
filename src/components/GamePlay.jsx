@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Box, Container } from '@mui/material'
-import { Users, Skull, Shield, Eye, EyeOff, Zap, Home, Target } from 'lucide-react'
+import { Users, Skull, Shield, Eye, EyeOff, Zap, Home, Target, Play } from 'lucide-react'
 
 const AVATAR_COLORS = [
   'from-teal-500 to-cyan-400',
@@ -31,7 +31,7 @@ function Divider() {
   return <Box sx={{ my: '40px', height: '1px', background: 'linear-gradient(to right, transparent, #334155, transparent)' }} />
 }
 
-export default function GamePlay({ roles, onEliminate, onQuickReset, onFullReset }) {
+export default function GamePlay({ roles, onEliminate, onQuickReset, onFullReset, starterPlayer }) {
   const [elimTarget, setElimTarget] = useState(null)
   const [showImposters, setShowImposters] = useState(false)
 
@@ -53,6 +53,40 @@ export default function GamePlay({ roles, onEliminate, onQuickReset, onFullReset
           <h1 className="font-black text-lg gradient-text" style={{ margin: 0 }}>? Chkoune l'Imposter</h1>
           <p style={{ color: '#64748b', fontSize: 14, marginTop: 6 }}>مرحلة النقاش والتصويت</p>
         </Box>
+
+        {/* ─── STARTER PLAYER BANNER ─── */}
+        {starterPlayer && (
+          <motion.div
+            initial={{ opacity: 0, y: -12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Box sx={{
+              mt: '16px', mb: '8px', py: '16px', px: '20px',
+              background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(45,212,191,0.12))',
+              border: '1px solid rgba(99,102,241,0.25)',
+              borderRadius: '20px',
+              display: 'flex', alignItems: 'center', gap: '14px',
+              direction: 'rtl',
+            }}>
+              <Box sx={{
+                width: 44, height: 44, borderRadius: '14px',
+                background: 'linear-gradient(135deg, #818cf8, #2dd4bf)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <Play size={20} style={{ color: '#0f172a' }} strokeWidth={2.5} fill="#0f172a" />
+              </Box>
+              <div>
+                <p style={{ color: '#c7d2fe', fontSize: 13, margin: 0, fontWeight: 600 }}>
+                  يبدأ النقاش
+                </p>
+                <p style={{ color: '#fff', fontSize: 20, fontWeight: 900, margin: '2px 0 0' }}>
+                  {starterPlayer.name} 🎙️
+                </p>
+              </div>
+            </Box>
+          </motion.div>
+        )}
 
         {/* ─── STATS ─── */}
         <Box sx={{ display: 'flex', gap: '10px', mb: '12px', mt: "25px" }}>

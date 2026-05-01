@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Setup from './components/Setup'
 import WordReveal from './components/WordReveal'
@@ -16,15 +16,57 @@ function shuffle(arr) {
   return a
 }
 
-function buildRoles(players, imposterCount, pair, hintsMode) {
+function weightedRandomPick(weights) {
+  // Pick one index based on weights array, returns the index
+  const total = weights.reduce((s, w) => s + w, 0)
+  let r = Math.random() * total
+  for (let i = 0; i < weights.length; i++) {
+    r -= weights[i]
+    if (r <= 0) return i
+  }
+  return weights.length - 1
+}
+
+function buildRoles(players, imposterCount, pair, hintsMode, imposterHistory) {
   // Randomly pick one word from the words array
   const words = pair.words || [pair.word || pair.wordA];
   const secretWord = words[Math.floor(Math.random() * words.length)];
   const hint = pair.hint;
 
-  // Assign imposter indices
-  const indices = shuffle([...Array(players.length).keys()])
-  const imposterIndices = new Set(indices.slice(0, imposterCount))
+  // Weighted-random imposter selection:
+  // Everyone has a chance, but recent imposters have lower probability
+  const lastRound = imposterHistory.length > 0 ? imposterHistory[imposterHistory.length - 1] : []
+  const lastRoundSet = new Set(lastRound)
+  const recentHistory = imposterHistory.slice(-3)
+
+  // Count recent imposter appearances
+  const recentCounts = {}
+  players.forEach((_, i) => { recentCounts[i] = 0 })
+  recentHistory.forEach(indices => {
+    indices.forEach(idx => {
+      if (idx < players.length) recentCounts[idx] = (recentCounts[idx] || 0) + 1
+    })
+  })
+
+  // Build weights: base 1.0, penalize recent imposters
+  const baseWeights = players.map((_, i) => {
+    let w = 1.0
+    // Strong penalty if you were imposter LAST round
+    if (lastRoundSet.has(i)) w -= 0.55
+    // Lighter penalty for each appearance in the last 3 rounds
+    w -= recentCounts[i] * 0.15
+    // Floor at 0.1 so it's never impossible — just very unlikely
+    return Math.max(0.1, w)
+  })
+
+  // Pick imposters via weighted random draw (without replacement)
+  const imposterIndices = new Set()
+  const remainingWeights = [...baseWeights]
+  for (let pick = 0; pick < imposterCount; pick++) {
+    const idx = weightedRandomPick(remainingWeights)
+    imposterIndices.add(idx)
+    remainingWeights[idx] = 0 // remove from pool
+  }
 
   return players.map((name, i) => ({
     name,
@@ -52,6 +94,12 @@ export default function App() {
   const [revealIndex, setRevealIndex] = useState(0)
   const [winner, setWinner] = useState(null) // 'citizens' | 'imposters'
   const [lastCategory, setLastCategory] = useState(null)
+  const [starterPlayer, setStarterPlayer] = useState(null)
+
+  // Track used word pairs (by stringified key) to avoid repeats in same session
+  const usedPairsRef = useRef(new Set())
+  // Track imposter history: array of arrays of imposter indices
+  const imposterHistoryRef = useRef([])
 
   const getWordPair = (selectedCategories) => {
     const pool = gameData.categories.filter(c => selectedCategories.includes(c.id))
@@ -63,7 +111,29 @@ export default function App() {
     const category = availablePool[Math.floor(Math.random() * availablePool.length)]
     setLastCategory(category.id)
 
-    const localPair = category.pairs[Math.floor(Math.random() * category.pairs.length)]
+    // Filter out pairs already used in this session
+    let availablePairs = category.pairs.filter(p => {
+      const key = `${category.id}::${p.words.join(',')}`
+      return !usedPairsRef.current.has(key)
+    })
+
+    // If all pairs in this category are used, reset the tracking for this category
+    if (availablePairs.length === 0) {
+      // Clear used pairs for this category
+      const keysToRemove = []
+      usedPairsRef.current.forEach(k => {
+        if (k.startsWith(`${category.id}::`)) keysToRemove.push(k)
+      })
+      keysToRemove.forEach(k => usedPairsRef.current.delete(k))
+      availablePairs = category.pairs
+    }
+
+    const localPair = availablePairs[Math.floor(Math.random() * availablePairs.length)]
+
+    // Mark this pair as used
+    const pairKey = `${category.id}::${localPair.words.join(',')}`
+    usedPairsRef.current.add(pairKey)
+
     return localPair;
   }
 
@@ -73,7 +143,16 @@ export default function App() {
     setPlayers(playerNames)
 
     const pair = getWordPair(selectedCategories)
-    const assigned = buildRoles(playerNames, imposterCount, pair, hintsMode)
+    const assigned = buildRoles(playerNames, imposterCount, pair, hintsMode, imposterHistoryRef.current)
+
+    // Record imposter history
+    const imposterIndices = assigned.filter(p => p.isImposter).map(p => p.id)
+    imposterHistoryRef.current.push(imposterIndices)
+
+    // Pick a non-imposter player to start the game
+    const nonImposters = assigned.filter(p => !p.isImposter)
+    const starter = nonImposters[Math.floor(Math.random() * nonImposters.length)]
+    setStarterPlayer(starter)
 
     setRoles(assigned)
     setRevealIndex(0)
@@ -107,7 +186,17 @@ export default function App() {
   const quickReset = useCallback(() => {
     if (!config) return
     const pair = getWordPair(config.selectedCategories)
-    const assigned = buildRoles(config.playerNames, config.imposterCount, pair, config.hintsMode)
+    const assigned = buildRoles(config.playerNames, config.imposterCount, pair, config.hintsMode, imposterHistoryRef.current)
+
+    // Record imposter history
+    const imposterIndices = assigned.filter(p => p.isImposter).map(p => p.id)
+    imposterHistoryRef.current.push(imposterIndices)
+
+    // Pick a non-imposter player to start the game
+    const nonImposters = assigned.filter(p => !p.isImposter)
+    const starter = nonImposters[Math.floor(Math.random() * nonImposters.length)]
+    setStarterPlayer(starter)
+
     setRoles(assigned)
     setRevealIndex(0)
     setWinner(null)
@@ -121,6 +210,9 @@ export default function App() {
     setRoles([])
     setRevealIndex(0)
     setWinner(null)
+    setStarterPlayer(null)
+    usedPairsRef.current.clear()
+    imposterHistoryRef.current = []
   }, [])
 
   return (
@@ -157,6 +249,7 @@ export default function App() {
               onEliminate={onEliminate}
               onQuickReset={quickReset}
               onFullReset={fullReset}
+              starterPlayer={starterPlayer}
             />
           </motion.div>
         )}

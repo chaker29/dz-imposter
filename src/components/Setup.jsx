@@ -5,7 +5,7 @@ import {
   Trophy, Pizza, PawPrint, Car, Building2, Laptop, Smile,
   Clapperboard, Music, GraduationCap, MapPin, Shirt,
   Plus, X, Users, Lightbulb, UserCheck, Rocket, ChevronUp, ChevronDown,
-  Settings, Shapes , Landmark, Tag
+  Settings, Shapes , Landmark, Tag, Package
 } from 'lucide-react'
 
 const CAT_ICONS = {
@@ -24,6 +24,7 @@ const CAT_ICONS = {
   players: <Users size={26} strokeWidth={1.8} />,
   landmarks: <Landmark size={26} strokeWidth={1.8} />,
   brands: <Tag size={26} strokeWidth={1.8} />,
+  objects: <Package size={26} strokeWidth={1.8} />,
 }
 
 const AVATAR_COLORS = [
